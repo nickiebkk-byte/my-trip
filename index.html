@@ -3,12 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>MY TRIP — Travel Dashboard</title>
+  <title>MY TRIP — TRAVEL DASHBOARD</title>
   
+  <!-- iOS Meta Tags สำหรับเปิดเต็มจอบน iPhone -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MY TRIP">
+  <meta name="theme-color" content="#161c38">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/826/826070.png">
+
+  <!-- Tailwind CSS & Fonts & Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
@@ -31,214 +39,217 @@
     }
   </script>
   <style>
-    body { font-family: 'Prompt', sans-serif; background-color: #f1f3f9; }
+    * { font-family: 'Prompt', sans-serif; }
+    body { background-color: #f1f3f9; }
+    .eng-upper { text-transform: uppercase; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .hero-gradient {
-      background: linear-gradient(180deg, rgba(20, 27, 65, 0.2) 0%, rgba(15, 23, 42, 0.92) 100%);
+      background: linear-gradient(180deg, rgba(20, 27, 65, 0.2) 0%, rgba(15, 23, 42, 0.94) 100%);
     }
   </style>
 </head>
 <body class="text-slate-800 min-h-screen pb-32">
 
   <!-- Top Simple Status Bar -->
-  <header class="bg-white/90 backdrop-blur-md sticky top-0 z-30 border-b border-slate-200/80 px-4 py-2.5">
+  <header class="bg-white/90 backdrop-blur-md sticky top-0 z-30 border-b border-slate-200/80 px-4 py-3">
     <div class="max-w-md mx-auto flex justify-between items-center">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-sm">
-          <i class="fa-solid fa-compass text-sm"></i>
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-brand-blue flex items-center justify-center text-white shadow-sm">
+          <i class="fa-solid fa-compass text-base"></i>
         </div>
         <div>
-          <select id="tripSelectDropdown" onchange="switchActiveTrip(this.value)" class="bg-transparent text-xs font-bold text-slate-800 focus:outline-none max-w-[140px] truncate cursor-pointer">
+          <select id="tripSelectDropdown" onchange="switchActiveTrip(this.value)" class="bg-transparent text-sm font-bold text-slate-800 focus:outline-none max-w-[150px] truncate cursor-pointer eng-upper">
           </select>
-          <p class="text-[10px] text-slate-400 -mt-0.5" id="tripDatesSub"></p>
+          <p class="text-xs text-slate-400 font-medium -mt-0.5 eng-upper" id="tripDatesSub"></p>
         </div>
       </div>
 
-      <div class="flex items-center gap-1.5">
-        <button onclick="openNewTripModal()" class="px-2.5 py-1 rounded-full bg-brand-yellow text-slate-900 font-semibold text-[11px] flex items-center gap-1 shadow-sm">
-          <i class="fa-solid fa-plus text-[10px]"></i> ทริปใหม่
+      <div class="flex items-center gap-2">
+        <button onclick="openNewTripModal()" class="px-3 py-1.5 rounded-full bg-brand-yellow text-slate-900 font-bold text-xs flex items-center gap-1.5 shadow-sm eng-upper">
+          <i class="fa-solid fa-plus text-xs"></i> ทริปใหม่
         </button>
-        <button onclick="openActionMenu('trip', appState.activeTripId, getActiveTrip()?.title)" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-xs">
+        <button onclick="openActionMenu('trip', appState.activeTripId, getActiveTrip()?.title)" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm">
           <i class="fa-solid fa-ellipsis-vertical"></i>
         </button>
       </div>
     </div>
   </header>
 
-  <main class="max-w-md mx-auto px-4 pt-3.5 space-y-3.5">
+  <main class="max-w-md mx-auto px-4 pt-4 space-y-4">
 
     <!-- ==================== HERO COVER CARD ==================== -->
-    <div class="relative overflow-hidden rounded-[28px] shadow-lg border border-slate-200/60 bg-slate-900 text-white min-h-[200px] flex flex-col justify-end p-5">
+    <div class="relative overflow-hidden rounded-[28px] shadow-lg border border-slate-200/60 bg-slate-900 text-white min-h-[220px] flex flex-col justify-end p-5">
       <img id="heroCoverImg" src="" class="absolute inset-0 w-full h-full object-cover transition-all duration-700">
       <div class="absolute inset-0 hero-gradient"></div>
 
+      <!-- Action Buttons Top Right -->
       <div class="absolute top-4 right-4 z-20 flex items-center gap-2">
-        <button onclick="openEditTripModal()" class="w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/20 text-white flex items-center justify-center text-xs shadow-sm transition active:scale-95" title="แก้ไขข้อมูลทริป">
+        <button onclick="openEditTripModal()" class="w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/20 text-white flex items-center justify-center text-sm shadow-sm transition active:scale-95" title="แก้ไขข้อมูลทริป">
           <i class="fa-regular fa-pen-to-square"></i>
         </button>
-        <label class="w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/20 text-white flex items-center justify-center text-xs cursor-pointer shadow-sm transition active:scale-95" title="เปลี่ยนรูปหน้าปก">
+        <label class="w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/20 text-white flex items-center justify-center text-sm cursor-pointer shadow-sm transition active:scale-95" title="เปลี่ยนรูปหน้าปก">
           <i class="fa-solid fa-camera"></i>
           <input type="file" accept="image/*" class="hidden" onchange="handleCustomCoverUpload(event)">
         </label>
       </div>
 
+      <!-- Hero Details -->
       <div class="relative z-10 space-y-2">
-        <div class="inline-flex items-center gap-1.5 text-[10px] tracking-wider uppercase font-extrabold text-brand-yellowLight">
-          <i class="fa-solid fa-sparkles text-[9px]"></i> <span id="heroSubtitle"></span>
+        <div class="inline-flex items-center gap-1.5 text-xs tracking-wider uppercase font-extrabold text-brand-yellowLight eng-upper">
+          <i class="fa-solid fa-sparkles text-[10px]"></i> <span id="heroSubtitle"></span>
         </div>
         
-        <h1 class="text-2xl font-extrabold leading-tight tracking-tight text-white drop-shadow-sm cursor-pointer hover:text-brand-yellowLight transition" id="heroTripTitle" onclick="openEditTripModal()" title="คลิกเพื่อแก้ไขชื่อทริป">
+        <h1 class="text-2xl font-extrabold leading-tight tracking-tight text-white drop-shadow-sm cursor-pointer hover:text-brand-yellowLight transition eng-upper" id="heroTripTitle" onclick="openEditTripModal()" title="คลิกเพื่อแก้ไขชื่อทริป">
         </h1>
 
-        <div class="flex flex-wrap items-center gap-1.5 pt-1 text-[11px]">
-          <span class="px-2.5 py-0.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-slate-200 font-medium" id="heroDatesBadge"></span>
-          <span class="px-2.5 py-0.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-slate-200 font-medium" id="heroHotelBadge">SHINJUKU</span>
-          <span class="px-2.5 py-0.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-brand-yellow font-mono font-bold" id="heroFlightBadge"></span>
+        <div class="flex flex-wrap items-center gap-2 pt-1 text-xs">
+          <span class="px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-slate-100 font-semibold eng-upper" id="heroDatesBadge"></span>
+          <span class="px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-slate-100 font-bold eng-upper" id="heroHotelBadge">SHINJUKU</span>
+          <span class="px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-brand-yellow font-mono font-extrabold eng-upper" id="heroFlightBadge"></span>
         </div>
       </div>
     </div>
 
     <!-- ==================== 2x2 QUICK STATS GRID ==================== -->
-    <div class="grid grid-cols-2 gap-2.5">
-      <div class="bg-brand-blue text-white rounded-[22px] p-3.5 shadow-sm space-y-1 relative overflow-hidden">
-        <span class="text-[11px] font-medium text-blue-100 block">ขาไป</span>
-        <div class="text-base font-bold tracking-tight font-mono" id="statFlightOut">-</div>
+    <div class="grid grid-cols-2 gap-3">
+      <div class="bg-brand-blue text-white rounded-[22px] p-4 shadow-sm space-y-1 relative overflow-hidden">
+        <span class="text-xs font-semibold text-blue-100 block eng-upper">ขาไป</span>
+        <div class="text-lg font-extrabold tracking-tight font-mono eng-upper" id="statFlightOut">-</div>
       </div>
 
-      <div class="bg-brand-yellow text-slate-900 rounded-[22px] p-3.5 shadow-sm space-y-1 relative overflow-hidden">
-        <span class="text-[11px] font-medium text-amber-900/80 block">ฐานที่พัก</span>
-        <div class="text-base font-extrabold tracking-tight uppercase truncate" id="statHotel">-</div>
+      <div class="bg-brand-yellow text-slate-900 rounded-[22px] p-4 shadow-sm space-y-1 relative overflow-hidden">
+        <span class="text-xs font-bold text-amber-900/80 block eng-upper">ฐานที่พัก</span>
+        <div class="text-lg font-extrabold tracking-tight uppercase truncate eng-upper" id="statHotel">-</div>
       </div>
 
-      <div class="bg-white text-slate-800 rounded-[22px] p-3.5 shadow-sm border border-slate-200/80 space-y-1">
-        <span class="text-[11px] font-medium text-slate-400 block" id="statTransitLabel">รถเช่า / รถไฟ</span>
-        <div class="text-sm font-bold text-slate-800 truncate" id="statTransitVal">-</div>
+      <div class="bg-white text-slate-800 rounded-[22px] p-4 shadow-sm border border-slate-200/80 space-y-1">
+        <span class="text-xs font-semibold text-slate-400 block eng-upper" id="statTransitLabel">รถเช่า / รถไฟ</span>
+        <div class="text-base font-extrabold text-slate-800 truncate eng-upper" id="statTransitVal">-</div>
       </div>
 
-      <div class="bg-white text-slate-800 rounded-[22px] p-3.5 shadow-sm border border-slate-200/80 space-y-1">
-        <span class="text-[11px] font-medium text-slate-400 block">ยอดใช้จ่ายสะสม</span>
-        <div class="text-sm font-bold text-emerald-600 font-mono" id="statExpenseVal">฿0</div>
+      <div class="bg-white text-slate-800 rounded-[22px] p-4 shadow-sm border border-slate-200/80 space-y-1">
+        <span class="text-xs font-semibold text-slate-400 block eng-upper">ยอดใช้จ่ายสะสม</span>
+        <div class="text-base font-extrabold text-emerald-600 font-mono eng-upper" id="statExpenseVal">฿0</div>
       </div>
     </div>
 
     <!-- ==================== TAB CONTENT SECTIONS ==================== -->
     <!-- TAB 1: TODAY / ITINERARY -->
-    <div id="tab-today-content" class="space-y-3.5">
-      <!-- Day Carousel Pills -->
-      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" id="dayFilterContainer"></div>
+    <div id="tab-today-content" class="space-y-4">
+      <div class="flex items-center gap-2.5 overflow-x-auto no-scrollbar py-1" id="dayFilterContainer"></div>
 
       <!-- Main Day Header Banner -->
       <div class="bg-brand-blue text-white rounded-[24px] p-4 shadow-sm flex justify-between items-center">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-brand-yellow text-slate-900 font-extrabold text-base flex items-center justify-center shadow-sm" id="activeDayBadgeNum">1</div>
+          <div class="w-11 h-11 rounded-2xl bg-brand-yellow text-slate-900 font-black text-lg flex items-center justify-center shadow-sm eng-upper" id="activeDayBadgeNum">1</div>
           <div>
-            <h3 class="text-sm font-bold leading-tight" id="activeDayTitle">-</h3>
-            <p class="text-[11px] text-blue-100" id="activeDayDesc">-</p>
+            <h3 class="text-base font-bold leading-tight eng-upper" id="activeDayTitle">-</h3>
+            <p class="text-xs text-blue-100 font-medium eng-upper" id="activeDayDesc">-</p>
           </div>
         </div>
-        <span class="px-3 py-1 rounded-full bg-brand-yellow text-slate-900 font-extrabold text-[10px] uppercase tracking-wider" id="activeDayTag">DAY 1</span>
+        <span class="px-3.5 py-1 rounded-full bg-brand-yellow text-slate-900 font-extrabold text-xs uppercase tracking-wider eng-upper" id="activeDayTag">DAY 1</span>
       </div>
 
-      <div class="bg-white rounded-[26px] p-4 shadow-sm border border-slate-200/80 space-y-3">
-        <div class="flex justify-between items-center text-xs text-slate-400 font-medium pb-1 border-b border-slate-100">
-          <span>ความคืบหน้าวันนี้</span>
-          <span class="font-bold text-slate-700 font-mono" id="dayProgressText">0/0</span>
+      <div class="bg-white rounded-[26px] p-5 shadow-sm border border-slate-200/80 space-y-3.5">
+        <div class="flex justify-between items-center text-xs text-slate-400 font-semibold pb-1.5 border-b border-slate-100">
+          <span class="eng-upper">ความคืบหน้าวันนี้</span>
+          <span class="font-bold text-slate-700 font-mono text-sm" id="dayProgressText">0/0</span>
         </div>
-        <div id="itineraryContainer" class="space-y-2.5"></div>
+        <div id="itineraryContainer" class="space-y-3"></div>
       </div>
     </div>
 
     <!-- TAB 2: LOGISTICS -->
-    <div id="tab-logistics-content" class="space-y-3 hidden">
-      <div class="bg-white rounded-[26px] p-4 shadow-sm border border-slate-200/80 space-y-3">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-          <i class="fa-solid fa-plane-departure text-brand-blue"></i> เที่ยวบิน (Flights)
+    <div id="tab-logistics-content" class="space-y-4 hidden">
+      <div class="bg-white rounded-[26px] p-5 shadow-sm border border-slate-200/80 space-y-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5 eng-upper">
+          <i class="fa-solid fa-plane-departure text-brand-blue"></i> เที่ยวบิน (FLIGHTS)
         </h3>
-        <div id="flightListContainer" class="space-y-2"></div>
+        <div id="flightListContainer" class="space-y-2.5"></div>
       </div>
 
-      <div class="bg-white rounded-[26px] p-4 shadow-sm border border-slate-200/80 space-y-3">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-          <i class="fa-solid fa-train-subway text-cyan-500"></i> การเดินทาง (รถไฟ / รถเช่า / เรือ)
+      <div class="bg-white rounded-[26px] p-5 shadow-sm border border-slate-200/80 space-y-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5 eng-upper">
+          <i class="fa-solid fa-train-subway text-cyan-500"></i> การเดินทาง (TRANSIT)
         </h3>
-        <div id="transitListContainer" class="space-y-2"></div>
+        <div id="transitListContainer" class="space-y-2.5"></div>
       </div>
 
-      <div class="bg-white rounded-[26px] p-4 shadow-sm border border-slate-200/80 space-y-3">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-          <i class="fa-solid fa-hotel text-amber-500"></i> ที่พัก (Hotels)
+      <div class="bg-white rounded-[26px] p-5 shadow-sm border border-slate-200/80 space-y-3">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5 eng-upper">
+          <i class="fa-solid fa-hotel text-amber-500"></i> ที่พัก (HOTELS)
         </h3>
-        <div id="hotelListContainer" class="space-y-2"></div>
+        <div id="hotelListContainer" class="space-y-2.5"></div>
       </div>
     </div>
 
     <!-- TAB 3: CHECKLIST -->
     <div id="tab-checklist-content" class="space-y-3 hidden">
       <div class="bg-white rounded-[24px] p-3 shadow-sm border border-slate-200/80 flex gap-2">
-        <input type="text" id="quickChecklistInput" placeholder="เพิ่มของเตรียมตัว..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-brand-blue">
-        <button onclick="handleQuickChecklist()" class="bg-brand-blue text-white px-4 rounded-xl text-xs font-bold">เพิ่ม</button>
+        <input type="text" id="quickChecklistInput" placeholder="เพิ่มสิ่งของที่ต้องเตรียม..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-brand-blue">
+        <button onclick="handleQuickChecklist()" class="bg-brand-blue text-white px-5 rounded-xl text-xs font-bold eng-upper">เพิ่ม</button>
       </div>
-      <div class="bg-white rounded-[26px] p-4 shadow-sm border border-slate-200/80 space-y-2" id="checklistContainer"></div>
+      <div class="bg-white rounded-[26px] p-5 shadow-sm border border-slate-200/80 space-y-2.5" id="checklistContainer"></div>
     </div>
 
     <!-- TAB 4: EXPENSES -->
-    <div id="tab-budget-content" class="space-y-3 hidden">
-      <div class="bg-gradient-to-br from-brand-blue to-indigo-700 text-white rounded-[26px] p-5 shadow-sm space-y-3">
+    <div id="tab-budget-content" class="space-y-4 hidden">
+      <div class="bg-gradient-to-br from-brand-blue to-indigo-700 text-white rounded-[26px] p-5 shadow-sm space-y-3.5">
         <div class="flex justify-between items-center">
-          <span class="text-xs text-blue-100 font-medium">รวมค่าใช้จ่ายทั้งหมด</span>
-          <button onclick="exportExpensesCSV()" class="px-2.5 py-1 rounded-full bg-white/20 text-white text-[10px] font-bold">
-            <i class="fa-solid fa-file-csv mr-1"></i> Export
+          <span class="text-xs text-blue-100 font-semibold eng-upper">รวมค่าใช้จ่ายทั้งหมด</span>
+          <button onclick="exportExpensesCSV()" class="px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold eng-upper">
+            <i class="fa-solid fa-file-csv mr-1"></i> EXPORT CSV
           </button>
         </div>
-        <div class="text-3xl font-extrabold font-mono" id="budgetTotalCard">฿0</div>
+        <div class="text-3xl font-black font-mono tracking-tight" id="budgetTotalCard">฿0</div>
         
-        <div class="pt-2 border-t border-white/20 grid grid-cols-4 text-center text-xs">
-          <div><span class="text-[10px] text-blue-200 block">🍜 อาหาร</span><span class="font-bold font-mono" id="catFood">฿0</span></div>
-          <div><span class="text-[10px] text-blue-200 block">🚅 เดินทาง</span><span class="font-bold font-mono" id="catTransport">฿0</span></div>
-          <div><span class="text-[10px] text-blue-200 block">🏨 ที่พัก</span><span class="font-bold font-mono" id="catHotel">฿0</span></div>
-          <div><span class="text-[10px] text-blue-200 block">🛍️ อื่นๆ</span><span class="font-bold font-mono" id="catOther">฿0</span></div>
+        <div class="pt-3 border-t border-white/20 grid grid-cols-4 text-center text-xs">
+          <div><span class="text-[11px] text-blue-200 block eng-upper">🍜 อาหาร</span><span class="font-bold font-mono text-sm" id="catFood">฿0</span></div>
+          <div><span class="text-[11px] text-blue-200 block eng-upper">🚅 เดินทาง</span><span class="font-bold font-mono text-sm" id="catTransport">฿0</span></div>
+          <div><span class="text-[11px] text-blue-200 block eng-upper">🏨 ที่พัก</span><span class="font-bold font-mono text-sm" id="catHotel">฿0</span></div>
+          <div><span class="text-[11px] text-blue-200 block eng-upper">🛍️ อื่นๆ</span><span class="font-bold font-mono text-sm" id="catOther">฿0</span></div>
         </div>
       </div>
-      <div id="expenseContainer" class="space-y-2"></div>
+      <div id="expenseContainer" class="space-y-2.5"></div>
     </div>
 
     <!-- TAB 5: EMERGENCY -->
-    <div id="tab-emergency-content" class="space-y-2.5 hidden">
-      <div class="text-xs text-slate-400 mb-1">แตะปุ่มโทรด่วนเพื่อติดต่อสายด่วนทันที</div>
-      <div id="emergencyContactsContainer" class="space-y-2.5"></div>
+    <div id="tab-emergency-content" class="space-y-3 hidden">
+      <div class="text-xs text-slate-400 mb-1 eng-upper">แตะปุ่มโทรเพื่อติดต่อสายด่วนทันที</div>
+      <div id="emergencyContactsContainer" class="space-y-3"></div>
     </div>
 
   </main>
 
   <!-- ==================== BOTTOM FLOATING SMART BUTTON ==================== -->
   <div class="fixed bottom-20 right-4 z-40">
-    <button onclick="toggleUnifiedAddSheet()" class="h-11 px-4 rounded-full bg-brand-yellow text-slate-900 font-extrabold text-xs flex items-center gap-1.5 shadow-xl hover:scale-105 active:scale-95 transition-all">
+    <button onclick="toggleUnifiedAddSheet()" class="h-12 px-5 rounded-full bg-brand-yellow text-slate-900 font-black text-xs flex items-center gap-2 shadow-xl hover:scale-105 active:scale-95 transition-all eng-upper">
       <i class="fa-solid fa-plus text-xs"></i> SMART ASSIST
     </button>
   </div>
 
   <!-- ==================== BOTTOM NAVIGATION BAR ==================== -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-brand-darkblue px-4 py-2 border-t border-slate-800/60 shadow-2xl">
+  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-brand-darkblue px-4 py-2.5 border-t border-slate-800/60 shadow-2xl">
     <div class="max-w-md mx-auto flex justify-between items-center">
-      <button onclick="switchBottomTab('today')" id="bnav-today" class="flex flex-col items-center justify-center py-1 px-3 rounded-2xl bg-brand-yellow text-slate-900 transition-all font-bold">
-        <i class="fa-solid fa-house text-xs mb-0.5"></i>
+      <button onclick="switchBottomTab('today')" id="bnav-today" class="flex flex-col items-center justify-center py-1.5 px-3.5 rounded-2xl bg-brand-yellow text-slate-900 transition-all font-bold eng-upper">
+        <i class="fa-solid fa-house text-sm mb-0.5"></i>
         <span class="text-[10px]">วันนี้</span>
       </button>
-      <button onclick="switchBottomTab('logistics')" id="bnav-logistics" class="flex flex-col items-center justify-center py-1 px-3 rounded-2xl text-slate-400 hover:text-white transition-all font-medium">
-        <i class="fa-solid fa-route text-xs mb-0.5"></i>
+      <button onclick="switchBottomTab('logistics')" id="bnav-logistics" class="flex flex-col items-center justify-center py-1.5 px-3.5 rounded-2xl text-slate-400 hover:text-white transition-all font-medium eng-upper">
+        <i class="fa-solid fa-route text-sm mb-0.5"></i>
         <span class="text-[10px]">เดินทาง/รร.</span>
       </button>
-      <button onclick="switchBottomTab('checklist')" id="bnav-checklist" class="flex flex-col items-center justify-center py-1 px-3 rounded-2xl text-slate-400 hover:text-white transition-all font-medium">
-        <i class="fa-solid fa-square-check text-xs mb-0.5"></i>
+      <button onclick="switchBottomTab('checklist')" id="bnav-checklist" class="flex flex-col items-center justify-center py-1.5 px-3.5 rounded-2xl text-slate-400 hover:text-white transition-all font-medium eng-upper">
+        <i class="fa-solid fa-square-check text-sm mb-0.5"></i>
         <span class="text-[10px]">เช็กลิสต์</span>
       </button>
-      <button onclick="switchBottomTab('budget')" id="bnav-budget" class="flex flex-col items-center justify-center py-1 px-3 rounded-2xl text-slate-400 hover:text-white transition-all font-medium">
-        <i class="fa-solid fa-wallet text-xs mb-0.5"></i>
+      <button onclick="switchBottomTab('budget')" id="bnav-budget" class="flex flex-col items-center justify-center py-1.5 px-3.5 rounded-2xl text-slate-400 hover:text-white transition-all font-medium eng-upper">
+        <i class="fa-solid fa-wallet text-sm mb-0.5"></i>
         <span class="text-[10px]">ค่าใช้จ่าย</span>
       </button>
-      <button onclick="switchBottomTab('emergency')" id="bnav-emergency" class="flex flex-col items-center justify-center py-1 px-3 rounded-2xl text-slate-400 hover:text-white transition-all font-medium">
-        <i class="fa-solid fa-circle-info text-xs mb-0.5"></i>
+      <button onclick="switchBottomTab('emergency')" id="bnav-emergency" class="flex flex-col items-center justify-center py-1.5 px-3.5 rounded-2xl text-slate-400 hover:text-white transition-all font-medium eng-upper">
+        <i class="fa-solid fa-circle-info text-sm mb-0.5"></i>
         <span class="text-[10px]">ข้อมูล</span>
       </button>
     </div>
@@ -246,37 +257,37 @@
 
   <!-- ==================== UNIFIED ADD SHEET ==================== -->
   <div id="unifiedAddSheet" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-end justify-center p-4 hidden">
-    <div class="bg-white w-full max-w-md rounded-[32px] p-5 shadow-2xl space-y-3">
+    <div class="bg-white w-full max-w-md rounded-[32px] p-6 shadow-2xl space-y-3.5">
       <div class="flex justify-between items-center pb-1">
-        <h4 class="text-sm font-extrabold text-slate-800">เพิ่มข้อมูลในทริป</h4>
+        <h4 class="text-sm font-extrabold text-slate-800 eng-upper">เพิ่มข้อมูลในทริป</h4>
         <button onclick="toggleUnifiedAddSheet()" class="text-slate-400 hover:text-slate-700 text-sm"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <div class="grid grid-cols-2 gap-2 text-xs">
-        <button onclick="openSpecificAdd('itinerary')" class="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 flex flex-col items-start gap-1 text-left">
-          <i class="fa-solid fa-map-location-dot text-brand-blue text-lg"></i>
-          <span class="font-bold text-slate-800 mt-1">จุดหมายเที่ยว</span>
-          <span class="text-[10px] text-slate-400">สถานที่, ร้านอาหาร, คาเฟ่</span>
+      <div class="grid grid-cols-2 gap-2.5 text-xs">
+        <button onclick="openSpecificAdd('itinerary')" class="p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 flex flex-col items-start gap-1 text-left">
+          <i class="fa-solid fa-map-location-dot text-brand-blue text-xl"></i>
+          <span class="font-bold text-slate-800 mt-1 eng-upper">จุดหมายเที่ยว</span>
+          <span class="text-[11px] text-slate-400">สถานที่, ร้านอาหาร, คาเฟ่</span>
         </button>
-        <button onclick="openSpecificAdd('expense')" class="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 flex flex-col items-start gap-1 text-left">
-          <i class="fa-solid fa-receipt text-emerald-500 text-lg"></i>
-          <span class="font-bold text-slate-800 mt-1">ค่าใช้จ่าย / สแกนบิล</span>
-          <span class="text-[10px] text-slate-400">บันทึกเงิน, ถ่ายสลิป, หารบิล</span>
+        <button onclick="openSpecificAdd('expense')" class="p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 flex flex-col items-start gap-1 text-left">
+          <i class="fa-solid fa-receipt text-emerald-500 text-xl"></i>
+          <span class="font-bold text-slate-800 mt-1 eng-upper">ค่าใช้จ่าย / สแกนบิล</span>
+          <span class="text-[11px] text-slate-400">บันทึกเงิน, ถ่ายสลิป, หารบิล</span>
         </button>
-        <button onclick="openSpecificAdd('transit')" class="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 flex flex-col items-start gap-1 text-left">
-          <i class="fa-solid fa-train-subway text-cyan-500 text-lg"></i>
-          <span class="font-bold text-slate-800 mt-1">รถไฟ / รถเช่า / เรือ</span>
-          <span class="text-[10px] text-slate-400">Shinkansen, เรือ, รถเช่า</span>
+        <button onclick="openSpecificAdd('transit')" class="p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 flex flex-col items-start gap-1 text-left">
+          <i class="fa-solid fa-train-subway text-cyan-500 text-xl"></i>
+          <span class="font-bold text-slate-800 mt-1 eng-upper">รถไฟ / รถเช่า / เรือ</span>
+          <span class="text-[11px] text-slate-400">Shinkansen, เรือ, รถเช่า</span>
         </button>
-        <button onclick="openSpecificAdd('hotel')" class="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 flex flex-col items-start gap-1 text-left">
-          <i class="fa-solid fa-hotel text-amber-500 text-lg"></i>
-          <span class="font-bold text-slate-800 mt-1">โรงแรม / ที่พัก</span>
-          <span class="text-[10px] text-slate-400">ที่อยู่, เช็กอิน, เช็กเอาต์</span>
+        <button onclick="openSpecificAdd('hotel')" class="p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 flex flex-col items-start gap-1 text-left">
+          <i class="fa-solid fa-hotel text-amber-500 text-xl"></i>
+          <span class="font-bold text-slate-800 mt-1 eng-upper">โรงแรม / ที่พัก</span>
+          <span class="text-[11px] text-slate-400">ที่อยู่, เช็กอิน, เช็กเอาต์</span>
         </button>
-        <button onclick="openSpecificAdd('flight')" class="col-span-2 p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 flex items-center gap-3 text-left">
-          <i class="fa-solid fa-plane-departure text-brand-blue text-lg"></i>
+        <button onclick="openSpecificAdd('flight')" class="col-span-2 p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 flex items-center gap-3 text-left">
+          <i class="fa-solid fa-plane-departure text-brand-blue text-xl"></i>
           <div>
-            <span class="font-bold text-slate-800 block">ตั๋วเครื่องบิน (Flights)</span>
-            <span class="text-[10px] text-slate-400">เพิ่มไฟลต์บินระหว่างทริปหรือขากลับ</span>
+            <span class="font-bold text-slate-800 block eng-upper">ตั๋วเครื่องบิน (FLIGHTS)</span>
+            <span class="text-[11px] text-slate-400">เพิ่มไฟลต์บินระหว่างทริปหรือขากลับ</span>
           </div>
         </button>
       </div>
@@ -285,17 +296,17 @@
 
   <!-- ==================== UNIFIED ACTION SHEET ==================== -->
   <div id="unifiedActionSheet" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-end justify-center p-4 hidden">
-    <div class="bg-white w-full max-w-md rounded-[32px] p-5 shadow-2xl space-y-3">
+    <div class="bg-white w-full max-w-md rounded-[32px] p-6 shadow-2xl space-y-3.5">
       <div class="flex justify-between items-center pb-1">
-        <h4 class="text-sm font-extrabold text-slate-800 truncate max-w-[250px]" id="actionSheetTitle">จัดการข้อมูล</h4>
+        <h4 class="text-sm font-extrabold text-slate-800 truncate max-w-[250px] eng-upper" id="actionSheetTitle">จัดการข้อมูล</h4>
         <button onclick="closeActionMenu()" class="text-slate-400 hover:text-slate-700 text-sm"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <div class="space-y-2">
-        <button id="btnActionEditTrip" onclick="openEditTripModal(); closeActionMenu();" class="w-full py-3 px-4 rounded-2xl bg-blue-50 hover:bg-blue-100 text-xs font-bold text-brand-blue flex items-center gap-2.5">
-          <i class="fa-regular fa-pen-to-square text-sm"></i> แก้ไขข้อมูล & วันที่เดินทาง
+      <div class="space-y-2.5">
+        <button id="btnActionEditTrip" onclick="openEditTripModal(); closeActionMenu();" class="w-full py-3.5 px-4 rounded-2xl bg-blue-50 hover:bg-blue-100 text-xs font-bold text-brand-blue flex items-center gap-2.5 eng-upper">
+          <i class="fa-regular fa-pen-to-square text-base"></i> แก้ไขข้อมูล & วันที่เดินทาง
         </button>
-        <button onclick="triggerDeleteAction()" class="w-full py-3 px-4 rounded-2xl bg-rose-50 hover:bg-rose-100 text-xs font-bold text-rose-600 flex items-center gap-2.5">
-          <i class="fa-regular fa-trash-can text-sm"></i> ลบข้อมูลนี้ (Delete)
+        <button onclick="triggerDeleteAction()" class="w-full py-3.5 px-4 rounded-2xl bg-rose-50 hover:bg-rose-100 text-xs font-bold text-rose-600 flex items-center gap-2.5 eng-upper">
+          <i class="fa-regular fa-trash-can text-base"></i> ลบข้อมูลนี้ (DELETE)
         </button>
       </div>
     </div>
@@ -305,48 +316,48 @@
   <div id="editTripModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="bg-white w-full max-w-md rounded-[32px] p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto no-scrollbar">
       <div class="flex justify-between items-center mb-3">
-        <h3 class="text-base font-extrabold text-slate-800 flex items-center gap-2">
+        <h3 class="text-base font-extrabold text-slate-800 flex items-center gap-2 eng-upper">
           <i class="fa-solid fa-pen-nib text-brand-blue"></i> แก้ไขข้อมูลทริป & วันเดินทาง
         </h3>
         <button onclick="closeEditTripModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <form onsubmit="handleSaveTripDetails(event)" class="space-y-3">
+      <form onsubmit="handleSaveTripDetails(event)" class="space-y-3.5">
         <div>
-          <label class="text-xs font-bold text-slate-600 block mb-1">ชื่อทริป (Trip Name)</label>
-          <input type="text" id="editTripTitleInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 font-bold focus:outline-none focus:border-brand-blue" required>
+          <label class="text-xs font-bold text-slate-600 block mb-1 eng-upper">ชื่อทริป (TRIP NAME)</label>
+          <input type="text" id="editTripTitleInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 font-bold focus:outline-none focus:border-brand-blue eng-upper" required>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-2 gap-2.5">
           <div>
-            <label class="text-xs font-bold text-slate-600 block mb-1">วันเริ่มเดินทาง (Start Date)</label>
-            <input type="date" id="editTripStartDateInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-brand-blue" required>
+            <label class="text-xs font-bold text-slate-600 block mb-1 eng-upper">วันเริ่มเดินทาง (START)</label>
+            <input type="date" id="editTripStartDateInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-brand-blue" required>
           </div>
           <div>
-            <label class="text-xs font-bold text-slate-600 block mb-1">วันสิ้นสุด (End Date)</label>
-            <input type="date" id="editTripEndDateInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-brand-blue" required>
+            <label class="text-xs font-bold text-slate-600 block mb-1 eng-upper">วันสิ้นสุด (END)</label>
+            <input type="date" id="editTripEndDateInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-brand-blue" required>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-2 gap-2.5">
           <div>
-            <label class="text-xs font-bold text-slate-600 block mb-1">ฐานที่พักหลัก</label>
-            <input type="text" id="editTripHotelInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-brand-blue">
+            <label class="text-xs font-bold text-slate-600 block mb-1 eng-upper">ฐานที่พักหลัก</label>
+            <input type="text" id="editTripHotelInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-brand-blue eng-upper">
           </div>
           <div>
-            <label class="text-xs font-bold text-slate-600 block mb-1">ไฮไลต์การเดินทาง</label>
-            <input type="text" id="editTripTransitInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-brand-blue">
+            <label class="text-xs font-bold text-slate-600 block mb-1 eng-upper">ไฮไลต์การเดินทาง</label>
+            <input type="text" id="editTripTransitInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-brand-blue eng-upper">
           </div>
         </div>
 
         <div>
-          <label class="text-xs font-bold text-slate-600 block mb-1">งบประมาณรวม (บาท)</label>
+          <label class="text-xs font-bold text-slate-600 block mb-1 eng-upper">งบประมาณรวม (บาท)</label>
           <input type="number" id="editTripBudgetInput" step="1000" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 font-mono focus:outline-none focus:border-brand-blue">
         </div>
 
-        <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeEditTripModal()" class="flex-1 bg-slate-100 text-slate-600 py-2.5 rounded-2xl text-xs font-bold">ยกเลิก</button>
-          <button type="submit" class="flex-1 bg-brand-blue text-white py-2.5 rounded-2xl text-xs font-bold shadow-md shadow-blue-500/30">บันทึกการแก้ไข</button>
+        <div class="flex gap-2.5 pt-2">
+          <button type="button" onclick="closeEditTripModal()" class="flex-1 bg-slate-100 text-slate-600 py-3 rounded-2xl text-xs font-bold eng-upper">ยกเลิก</button>
+          <button type="submit" class="flex-1 bg-brand-blue text-white py-3 rounded-2xl text-xs font-bold shadow-md shadow-blue-500/30 eng-upper">บันทึกการแก้ไข</button>
         </div>
       </form>
     </div>
@@ -356,7 +367,7 @@
   <div id="formModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="bg-white w-full max-w-md rounded-[32px] p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto no-scrollbar">
       <div class="flex justify-between items-center mb-3">
-        <h3 class="text-base font-extrabold text-slate-800" id="formModalTitle">บันทึกข้อมูล</h3>
+        <h3 class="text-base font-extrabold text-slate-800 eng-upper" id="formModalTitle">บันทึกข้อมูล</h3>
         <button onclick="closeFormModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div id="formModalBody"></div>
@@ -367,57 +378,57 @@
   <div id="newTripModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="bg-white w-full max-w-md rounded-[32px] p-6 shadow-2xl relative">
       <div class="flex items-center gap-2 mb-1">
-        <span class="w-8 h-8 rounded-xl bg-brand-yellow text-slate-900 flex items-center justify-center font-bold">
-          <i class="fa-solid fa-plane-departure text-sm"></i>
+        <span class="w-9 h-9 rounded-xl bg-brand-yellow text-slate-900 flex items-center justify-center font-black">
+          <i class="fa-solid fa-plane-departure text-base"></i>
         </span>
-        <h3 class="text-base font-extrabold text-slate-800">สร้างทริปใหม่จากไฟลต์บิน</h3>
+        <h3 class="text-base font-extrabold text-slate-800 eng-upper">สร้างทริปใหม่จากไฟลต์บิน</h3>
       </div>
-      <p class="text-xs text-slate-400 mb-4">ระบบจะ auto เติมรายละเอียดและเปลี่ยนรูปให้ตรงกับทริปทันที</p>
+      <p class="text-xs text-slate-400 mb-4 eng-upper">ระบบจะ AUTO เติมรายละเอียดและเปลี่ยนรูปให้ตรงกับทริปทันที</p>
 
       <form onsubmit="handleSmartTripSubmit(event)" class="space-y-3">
-        <div class="bg-blue-50/70 border border-blue-200/80 p-3 rounded-2xl space-y-2">
+        <div class="bg-blue-50/70 border border-blue-200/80 p-3.5 rounded-2xl space-y-2">
           <div>
-            <label class="text-xs font-bold text-brand-blue block mb-1">✈️ เที่ยวบินขาไป (Outbound Flight)</label>
+            <label class="text-xs font-bold text-brand-blue block mb-1 eng-upper">✈️ เที่ยวบินขาไป (OUTBOUND FLIGHT)</label>
             <input type="text" id="smartFlightNo" placeholder="เช่น TG660, TG642, JL034, LX181, TG662" oninput="onFlightNumberType(this.value)" class="w-full bg-white border border-blue-200 rounded-xl px-3 py-2 text-xs font-mono uppercase text-slate-800 focus:outline-none focus:border-brand-blue" required>
           </div>
           
-          <div id="flightDetectedBanner" class="hidden p-2 bg-white rounded-xl border border-blue-200 text-xs space-y-1">
-            <div class="flex items-center justify-between text-brand-blue font-bold">
-              <span id="detectedRouteText">BKK → HND (โตเกียว)</span>
-              <span class="px-2 py-0.5 rounded-full bg-brand-yellow text-[10px] text-slate-900 font-bold" id="detectedCountryBadge">ญี่ปุ่น</span>
+          <div id="flightDetectedBanner" class="hidden p-2.5 bg-white rounded-xl border border-blue-200 text-xs space-y-1">
+            <div class="flex items-center justify-between text-brand-blue font-bold eng-upper">
+              <span id="detectedRouteText">BKK → HND (TOKYO)</span>
+              <span class="px-2 py-0.5 rounded-full bg-brand-yellow text-[10px] text-slate-900 font-bold" id="detectedCountryBadge">JAPAN</span>
             </div>
-            <div class="flex justify-between text-[11px] text-slate-500 pt-0.5">
+            <div class="flex justify-between text-[11px] text-slate-500 pt-0.5 eng-upper">
               <span>เวลาออก: <strong id="detectedDepTime" class="text-brand-blue">21:30</strong> → ถึง: <strong id="detectedArrTime" class="text-emerald-600">06:05</strong></span>
               <span>อาคาร: <strong id="detectedTerminal" class="text-slate-700">T3</strong></span>
             </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-2 gap-2.5">
           <div>
-            <label class="text-xs text-slate-500 block mb-1 font-medium">วันที่เริ่มต้น</label>
+            <label class="text-xs text-slate-500 block mb-1 font-semibold eng-upper">วันที่เริ่มต้น</label>
             <input type="date" id="smartStartDate" onchange="onStartDateChange()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-brand-blue" required>
           </div>
           <div>
-            <label class="text-xs text-slate-500 block mb-1 font-medium">วันที่สิ้นสุด</label>
+            <label class="text-xs text-slate-500 block mb-1 font-semibold eng-upper">วันที่สิ้นสุด</label>
             <input type="date" id="smartEndDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-brand-blue" required>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-2 gap-2.5">
           <div>
-            <label class="text-xs text-slate-500 block mb-1 font-medium">จำนวนคนเดินทาง</label>
+            <label class="text-xs text-slate-500 block mb-1 font-semibold eng-upper">จำนวนคนเดินทาง</label>
             <input type="number" id="smartMembers" min="1" value="2" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-center font-bold text-slate-800 focus:outline-none" required>
           </div>
           <div>
-            <label class="text-xs text-slate-500 block mb-1 font-medium">ไฟลต์ขากลับ (ถ้ามี)</label>
+            <label class="text-xs text-slate-500 block mb-1 font-semibold eng-upper">ไฟลต์ขากลับ (ถ้ามี)</label>
             <input type="text" id="smartReturnFlightNo" placeholder="เช่น TG683" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono uppercase text-slate-800 focus:outline-none">
           </div>
         </div>
 
-        <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeNewTripModal()" class="flex-1 bg-slate-100 text-slate-600 py-2.5 rounded-2xl text-xs font-bold transition">ยกเลิก</button>
-          <button type="submit" class="flex-1 bg-brand-blue text-white py-2.5 rounded-2xl text-xs font-bold transition shadow-md shadow-blue-500/30">สร้างทริปอัตโนมัติ</button>
+        <div class="flex gap-2.5 pt-2">
+          <button type="button" onclick="closeNewTripModal()" class="flex-1 bg-slate-100 text-slate-600 py-3 rounded-2xl text-xs font-bold transition eng-upper">ยกเลิก</button>
+          <button type="submit" class="flex-1 bg-brand-blue text-white py-3 rounded-2xl text-xs font-bold transition shadow-md shadow-blue-500/30 eng-upper">สร้างทริปอัตโนมัติ</button>
         </div>
       </form>
     </div>
@@ -499,21 +510,18 @@
       return appState.trips.find(t => t.id === appState.activeTripId) || appState.trips[0];
     }
 
-    // ฟังก์ชันสร้าง Date Object ที่ปลอดภัยจาก Timezone Offset
     function parseSafeDate(dateStr) {
       if (!dateStr) return new Date();
       const parts = dateStr.split('-');
       return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
     }
 
-    // ฟังก์ชันจัดรูปแบบวันที่ภาษาไทย เช่น "29 ก.ย. 2026"
     function formatThaiDate(dateStr, includeYear = true) {
       if (!dateStr) return '';
       const d = parseSafeDate(dateStr);
       return `${d.getDate()} ${MONTHS_TH[d.getMonth()]}${includeYear ? ' ' + d.getFullYear() : ''}`;
     }
 
-    // คำนวณวันที่จริงของแต่ละ Day
     function getDateForTripDay(startDateStr, dayNumber) {
       const d = parseSafeDate(startDateStr);
       d.setDate(d.getDate() + (dayNumber - 1));
@@ -536,7 +544,6 @@
       return `${Math.floor(total / 60).toString().padStart(2, '0')}:${(total % 60).toString().padStart(2, '0')}`;
     }
 
-    // ==================== EDIT TRIP DETAILS & DATES ====================
     function openEditTripModal() {
       const trip = getActiveTrip();
       document.getElementById('editTripTitleInput').value = trip.title;
@@ -563,7 +570,6 @@
       trip.transitHighlight = document.getElementById('editTripTransitInput').value.trim();
       trip.budgetGoal = parseFloat(document.getElementById('editTripBudgetInput').value) || 80000;
 
-      // คำนวณจำนวนวันใหม่จากวันที่เดินทางจริง
       if (newStart && newEnd) {
         trip.startDate = newStart;
         trip.endDate = newEnd;
@@ -595,12 +601,12 @@
       ['today', 'logistics', 'checklist', 'budget', 'emergency'].forEach(t => {
         document.getElementById(`tab-${t}-content`).classList.add('hidden');
         const btn = document.getElementById(`bnav-${t}`);
-        btn.className = "flex flex-col items-center justify-center py-1 px-3 rounded-2xl text-slate-400 hover:text-white transition-all font-medium";
+        btn.className = "flex flex-col items-center justify-center py-1.5 px-3.5 rounded-2xl text-slate-400 hover:text-white transition-all font-medium eng-upper";
       });
 
       document.getElementById(`tab-${tabId}-content`).classList.remove('hidden');
       const activeBtn = document.getElementById(`bnav-${tabId}`);
-      activeBtn.className = "flex flex-col items-center justify-center py-1 px-3 rounded-2xl bg-brand-yellow text-slate-900 transition-all font-bold";
+      activeBtn.className = "flex flex-col items-center justify-center py-1.5 px-3.5 rounded-2xl bg-brand-yellow text-slate-900 transition-all font-bold eng-upper";
     }
 
     function openActionMenu(type, id, title) {
@@ -647,102 +653,102 @@
       if (type === 'itinerary') {
         title.innerText = "เพิ่มจุดหมายเที่ยว";
         body.innerHTML = `
-          <form onsubmit="handleSaveItinerary(event)" class="space-y-3">
-            <div class="grid grid-cols-2 gap-2">
+          <form onsubmit="handleSaveItinerary(event)" class="space-y-3.5">
+            <div class="grid grid-cols-2 gap-2.5">
               <div>
-                <label class="text-[10px] text-slate-400 block mb-1">วันที่ (Day)</label>
-                <input type="number" id="fItinDay" min="1" max="${trip.daysCount}" value="${trip.selectedDay || 1}" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800" required>
+                <label class="text-xs font-bold text-slate-500 block mb-1 eng-upper">วันที่ (DAY)</label>
+                <input type="number" id="fItinDay" min="1" max="${trip.daysCount}" value="${trip.selectedDay || 1}" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 font-bold" required>
               </div>
               <div>
-                <label class="text-[10px] text-slate-400 block mb-1">เวลา</label>
-                <input type="time" id="fItinTime" value="10:00" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-800" required>
+                <label class="text-xs font-bold text-slate-500 block mb-1 eng-upper">เวลา</label>
+                <input type="time" id="fItinTime" value="10:00" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-800 font-bold" required>
               </div>
             </div>
             <div>
-              <label class="text-[10px] text-slate-400 block mb-1">ชื่อสถานที่ / กิจกรรม</label>
-              <input type="text" id="fItinTitle" placeholder="เช่น ฮาราจูกุ, วัดเซ็นโซจิ" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800" required>
+              <label class="text-xs font-bold text-slate-500 block mb-1 eng-upper">ชื่อสถานที่ / กิจกรรม</label>
+              <input type="text" id="fItinTitle" placeholder="เช่น วัดเซ็นโซจิ, SHIBUYA SKY" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 eng-upper font-medium" required>
             </div>
             <div>
-              <label class="text-[10px] text-slate-400 block mb-1">โน้ตย่อ</label>
-              <input type="text" id="fItinDesc" placeholder="นั่งรถไฟสาย Yamanote" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800">
+              <label class="text-xs font-bold text-slate-500 block mb-1 eng-upper">โน้ตย่อ</label>
+              <input type="text" id="fItinDesc" placeholder="เดินทางโดยรถไฟสาย GINZA LINE" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 eng-upper">
             </div>
-            <button type="submit" class="w-full bg-brand-blue py-2.5 rounded-xl text-xs font-bold text-white mt-2">บันทึกลงตาราง</button>
+            <button type="submit" class="w-full bg-brand-blue py-3 rounded-xl text-xs font-bold text-white mt-2 eng-upper shadow-md shadow-blue-500/30">บันทึกลงตาราง</button>
           </form>
         `;
       } else if (type === 'expense') {
         title.innerText = "บันทึกค่าใช้จ่าย";
         body.innerHTML = `
-          <form onsubmit="handleSaveExpense(event)" class="space-y-3">
-            <div class="flex justify-between items-center bg-blue-50 p-2.5 rounded-xl border border-blue-200">
-              <span class="text-xs text-brand-blue font-bold">สแกนจากใบเสร็จ / สลิป</span>
-              <label class="cursor-pointer bg-brand-blue text-white px-3 py-1 rounded-lg text-xs font-bold">
+          <form onsubmit="handleSaveExpense(event)" class="space-y-3.5">
+            <div class="flex justify-between items-center bg-blue-50 p-3 rounded-xl border border-blue-200">
+              <span class="text-xs text-brand-blue font-bold eng-upper">สแกนจากใบเสร็จ / สลิป</span>
+              <label class="cursor-pointer bg-brand-blue text-white px-3.5 py-1.5 rounded-lg text-xs font-bold eng-upper">
                 <i class="fa-solid fa-camera mr-1"></i> ถ่ายบิล
                 <input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleModalBillScan(event)">
               </label>
             </div>
-            <input type="text" id="fExpName" placeholder="รายการ (เช่น ค่าอาหาร, ตั๋วรถไฟ)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800" required>
-            <div class="grid grid-cols-2 gap-2">
-              <input type="number" id="fExpAmount" step="any" placeholder="ยอดเงิน (${trip.currency})" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800" required>
-              <select id="fExpCat" class="bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-800">
+            <input type="text" id="fExpName" placeholder="รายการ (เช่น ค่าอาหาร, ตั๋วรถไฟ)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 eng-upper" required>
+            <div class="grid grid-cols-2 gap-2.5">
+              <input type="number" id="fExpAmount" step="any" placeholder="ยอดเงิน (${trip.currency})" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 font-bold" required>
+              <select id="fExpCat" class="bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-800 eng-upper font-medium">
                 <option value="อาหาร">🍜 ค่าอาหาร</option>
                 <option value="เดินทาง">🚅 ค่าเดินทาง</option>
                 <option value="ที่พัก">🏨 ค่าที่พัก</option>
                 <option value="ช้อปปิ้ง">🛍️ ช้อปปิ้ง</option>
               </select>
             </div>
-            <button type="submit" class="w-full bg-emerald-600 py-2.5 rounded-xl text-xs font-bold text-white mt-2">บันทึกรายการ</button>
+            <button type="submit" class="w-full bg-emerald-600 py-3 rounded-xl text-xs font-bold text-white mt-2 eng-upper shadow-md shadow-emerald-600/30">บันทึกรายการ</button>
           </form>
         `;
       } else if (type === 'transit') {
         title.innerText = "เพิ่มการเดินทาง";
         body.innerHTML = `
-          <form onsubmit="handleSaveTransit(event)" class="space-y-3">
-            <select id="fTrType" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-800">
-              <option value="car">🚗 รถเช่า (Car Rental)</option>
-              <option value="train">🚄 รถไฟ / Shinkansen</option>
-              <option value="boat">⛴️ เรือ / Ferry</option>
+          <form onsubmit="handleSaveTransit(event)" class="space-y-3.5">
+            <select id="fTrType" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-800 font-semibold eng-upper">
+              <option value="car">🚗 รถเช่า (CAR RENTAL)</option>
+              <option value="train">🚄 รถไฟ / SHINKANSEN</option>
+              <option value="boat">⛴️ เรือ / FERRY</option>
             </select>
-            <input type="text" id="fTrTitle" placeholder="เช่น รถเช่า ORIX หรือ Shinkansen" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800" required>
-            <div class="grid grid-cols-2 gap-2">
-              <input type="text" id="fTrFrom" placeholder="ต้นทาง (Tokyo)" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800" required>
-              <input type="text" id="fTrTo" placeholder="ปลายทาง (Fuji)" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800" required>
+            <input type="text" id="fTrTitle" placeholder="เช่น รถเช่า ORIX หรือ SHINKANSEN" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 eng-upper font-medium" required>
+            <div class="grid grid-cols-2 gap-2.5">
+              <input type="text" id="fTrFrom" placeholder="ต้นทาง (TOKYO)" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 eng-upper font-medium" required>
+              <input type="text" id="fTrTo" placeholder="ปลายทาง (FUJI)" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 eng-upper font-medium" required>
             </div>
             <div class="grid grid-cols-3 gap-2">
-              <input type="date" id="fTrDate" value="${trip.startDate}" class="bg-slate-50 border border-slate-200 rounded-xl p-2 text-[11px] text-slate-800" required>
-              <input type="time" id="fTrDep" value="08:30" class="bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-800" required>
-              <input type="time" id="fTrArr" value="10:30" class="bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-800">
+              <input type="date" id="fTrDate" value="${trip.startDate}" class="bg-slate-50 border border-slate-200 rounded-xl p-2 text-[11px] text-slate-800 font-semibold" required>
+              <input type="time" id="fTrDep" value="08:30" class="bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-800 font-semibold" required>
+              <input type="time" id="fTrArr" value="10:30" class="bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-800 font-semibold">
             </div>
-            <button type="submit" class="w-full bg-cyan-600 py-2.5 rounded-xl text-xs font-bold text-white mt-2">บันทึก & ซิงก์ตาราง</button>
+            <button type="submit" class="w-full bg-cyan-600 py-3 rounded-xl text-xs font-bold text-white mt-2 eng-upper shadow-md shadow-cyan-600/30">บันทึก & ซิงก์ตาราง</button>
           </form>
         `;
       } else if (type === 'hotel') {
         title.innerText = "เพิ่มที่พัก";
         body.innerHTML = `
-          <form onsubmit="handleSaveHotel(event)" class="space-y-3">
-            <input type="text" id="fHtName" placeholder="ชื่อโรงแรม เช่น GROOVE SHINJUKU" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800" required>
-            <div class="grid grid-cols-2 gap-2">
+          <form onsubmit="handleSaveHotel(event)" class="space-y-3.5">
+            <input type="text" id="fHtName" placeholder="ชื่อโรงแรม เช่น GROOVE SHINJUKU" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 eng-upper font-medium" required>
+            <div class="grid grid-cols-2 gap-2.5">
               <input type="date" id="fHtIn" value="${trip.startDate}" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-800" required>
               <input type="date" id="fHtOut" value="${trip.endDate}" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-800" required>
             </div>
-            <input type="text" id="fHtAddr" placeholder="ที่อยู่โรงแรม (สำหรับแท็กซี่)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800">
-            <button type="submit" class="w-full bg-amber-500 py-2.5 rounded-xl text-xs font-bold text-white mt-2">บันทึกที่พัก</button>
+            <input type="text" id="fHtAddr" placeholder="ที่อยู่โรงแรม (สำหรับแท็กซี่)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 eng-upper">
+            <button type="submit" class="w-full bg-amber-500 py-3 rounded-xl text-xs font-bold text-white mt-2 eng-upper shadow-md shadow-amber-500/30">บันทึกที่พัก</button>
           </form>
         `;
       } else if (type === 'flight') {
         title.innerText = "เพิ่มเที่ยวบิน";
         body.innerHTML = `
-          <form onsubmit="handleSaveFlight(event)" class="space-y-3">
-            <input type="text" id="fFlNo" placeholder="เลขไฟลต์ (เช่น TG683)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-mono uppercase text-slate-800" required>
-            <div class="grid grid-cols-2 gap-2">
-              <input type="text" id="fFlFrom" placeholder="ต้นทาง (HND)" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800" required>
-              <input type="text" id="fFlTo" placeholder="ปลายทาง (BKK)" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800" required>
+          <form onsubmit="handleSaveFlight(event)" class="space-y-3.5">
+            <input type="text" id="fFlNo" placeholder="เลขไฟลต์ (เช่น TG683)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-mono uppercase text-slate-800 font-bold" required>
+            <div class="grid grid-cols-2 gap-2.5">
+              <input type="text" id="fFlFrom" placeholder="ต้นทาง (HND)" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 font-bold eng-upper" required>
+              <input type="text" id="fFlTo" placeholder="ปลายทาง (BKK)" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 font-bold eng-upper" required>
             </div>
             <div class="grid grid-cols-3 gap-2">
               <input type="date" id="fFlDate" value="${trip.endDate}" class="bg-slate-50 border border-slate-200 rounded-xl p-2 text-[11px] text-slate-800" required>
               <input type="time" id="fFlDep" value="10:35" class="bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-800" required>
               <input type="time" id="fFlArr" value="15:05" class="bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-800" required>
             </div>
-            <button type="submit" class="w-full bg-brand-blue py-2.5 rounded-xl text-xs font-bold text-white mt-2">บันทึกเที่ยวบิน</button>
+            <button type="submit" class="w-full bg-brand-blue py-3 rounded-xl text-xs font-bold text-white mt-2 eng-upper shadow-md shadow-blue-500/30">บันทึกเที่ยวบิน</button>
           </form>
         `;
       }
@@ -933,14 +939,11 @@
     }
 
     function openNewTripModal() {
-      const today = new Date().toISOString().slice(0, 10);
-      document.getElementById('smartStartDate').value = today;
+      document.getElementById('smartStartDate').value = new Date().toISOString().slice(0, 10);
       onStartDateChange();
       document.getElementById('newTripModal').classList.remove('hidden');
     }
-
     function closeNewTripModal() { document.getElementById('newTripModal').classList.add('hidden'); }
-
     function onStartDateChange() {
       const start = document.getElementById('smartStartDate').value;
       if (start) {
@@ -952,7 +955,6 @@
         document.getElementById('smartEndDate').value = `${y}-${m}-${day}`;
       }
     }
-
     function onFlightNumberType(val) {
       const clean = val.trim().toUpperCase().replace(/\s+/g, '');
       const banner = document.getElementById('flightDetectedBanner');
@@ -1045,7 +1047,6 @@
         coverImg.src = DESTINATION_IMAGES[trip.city] || DESTINATION_IMAGES[trip.country] || DESTINATION_IMAGES.Other;
       }
 
-      // คำนวณช่วงวันที่เดินทางจริง
       const formattedStartDate = formatThaiDate(trip.startDate);
       const formattedEndDate = formatThaiDate(trip.endDate);
       const dateRangeText = `${formattedStartDate} – ${formattedEndDate}`;
@@ -1082,14 +1083,13 @@
         const isActive = trip.selectedDay === d;
         const pillBg = isActive ? 'bg-brand-yellow text-slate-900 shadow-md scale-105' : 'bg-white text-slate-700 border border-slate-200/80';
         
-        // คำนวณวันที่จริงของแต่ละ Day
         const curDate = getDateForTripDay(trip.startDate, d);
         const dateStr = `${curDate.getDate()} ${MONTHS_TH[curDate.getMonth()]}`;
 
         filterHtml += `
-          <button onclick="setDayFilter(${d})" class="min-w-[76px] py-2.5 px-3 rounded-[20px] ${pillBg} flex flex-col items-center justify-center transition-all cursor-pointer">
-            <span class="text-[11px] font-extrabold tracking-tight">DAY ${d}</span>
-            <span class="text-[10px] ${isActive ? 'text-slate-800' : 'text-slate-400'} font-medium mt-0.5">${dateStr}</span>
+          <button onclick="setDayFilter(${d})" class="min-w-[80px] py-3 px-3 rounded-[20px] ${pillBg} flex flex-col items-center justify-center transition-all cursor-pointer">
+            <span class="text-xs font-black tracking-tight eng-upper">DAY ${d}</span>
+            <span class="text-xs ${isActive ? 'text-slate-800 font-bold' : 'text-slate-400 font-medium'} mt-0.5 eng-upper">${dateStr}</span>
           </button>
         `;
       }
@@ -1098,7 +1098,6 @@
       const curDay = trip.selectedDay || 1;
       document.getElementById('activeDayBadgeNum').innerText = curDay;
       
-      // คำนวณวันและวันในสัปดาห์ (จันทร์-อาทิตย์) ตามปฏิทินจริง
       const dDate = getDateForTripDay(trip.startDate, curDay);
       const dayNameTh = DAYS_TH[dDate.getDay()];
       const fullDateTh = `${dDate.getDate()} ${MONTHS_TH[dDate.getMonth()]} ${dDate.getFullYear()}`;
@@ -1112,31 +1111,31 @@
       document.getElementById('dayProgressText').innerText = `${doneCount}/${items.length}`;
 
       if (items.length === 0) {
-        container.innerHTML = `<div class="text-center py-6 text-slate-400 text-xs">ยังไม่มีรายการในวันนี้ แตะ + SMART ASSIST เพื่อเพิ่ม</div>`;
+        container.innerHTML = `<div class="text-center py-8 text-slate-400 text-xs font-medium eng-upper">ยังไม่มีรายการในวันนี้ แตะ + SMART ASSIST เพื่อเพิ่ม</div>`;
         return;
       }
 
       container.innerHTML = items.map(item => `
-        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/70 flex items-start justify-between gap-2.5 transition ${item.done ? 'opacity-50' : ''}">
-          <div class="flex items-start gap-2.5 flex-1">
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/70 flex items-start justify-between gap-3 transition ${item.done ? 'opacity-50' : ''}">
+          <div class="flex items-start gap-3 flex-1">
             <span class="text-xs font-bold font-mono text-brand-blue shrink-0 mt-0.5">${item.time}</span>
             <div>
-              <h4 class="text-xs font-extrabold text-slate-800 leading-snug ${item.done ? 'line-through text-slate-400' : ''}">${item.title}</h4>
-              ${item.desc ? `<p class="text-[11px] text-slate-500 mt-0.5 leading-relaxed">${item.desc}</p>` : ''}
+              <h4 class="text-sm font-extrabold text-slate-800 leading-snug eng-upper ${item.done ? 'line-through text-slate-400' : ''}">${item.title}</h4>
+              ${item.desc ? `<p class="text-xs text-slate-500 mt-1 leading-relaxed eng-upper">${item.desc}</p>` : ''}
               
-              <div class="flex items-center gap-2 mt-2">
-                <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.title + ' ' + trip.country)}" target="_blank" class="px-2.5 py-1 rounded-full bg-slate-200/80 hover:bg-slate-300 text-slate-700 text-[10px] font-bold inline-flex items-center gap-1">
-                  <i class="fa-solid fa-diamond-turn-right text-[9px]"></i> แผนที่
+              <div class="flex items-center gap-2 mt-2.5">
+                <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.title + ' ' + trip.country)}" target="_blank" class="px-3 py-1 rounded-full bg-slate-200/80 hover:bg-slate-300 text-slate-700 text-[11px] font-bold inline-flex items-center gap-1.5 eng-upper">
+                  <i class="fa-solid fa-diamond-turn-right text-[10px]"></i> แผนที่
                 </a>
               </div>
             </div>
           </div>
 
-          <div class="flex items-center gap-1.5 shrink-0">
-            <button onclick="toggleItinDone(${item.id})" class="w-6 h-6 rounded-lg border-2 ${item.done ? 'bg-brand-blue border-brand-blue text-white' : 'border-slate-300 bg-white'} flex items-center justify-center text-[10px] transition">
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="toggleItinDone(${item.id})" class="w-6 h-6 rounded-lg border-2 ${item.done ? 'bg-brand-blue border-brand-blue text-white' : 'border-slate-300 bg-white'} flex items-center justify-center text-xs transition">
               ${item.done ? '<i class="fa-solid fa-check"></i>' : ''}
             </button>
-            <button onclick="openActionMenu('itinerary', ${item.id}, '${item.title}')" class="text-slate-300 hover:text-slate-600 text-xs p-1">
+            <button onclick="openActionMenu('itinerary', ${item.id}, '${item.title}')" class="text-slate-300 hover:text-slate-600 text-sm p-1">
               <i class="fa-solid fa-ellipsis-vertical"></i>
             </button>
           </div>
@@ -1148,25 +1147,25 @@
       const trip = getActiveTrip();
       
       const fl = document.getElementById('flightListContainer');
-      fl.innerHTML = trip.flights.length === 0 ? `<div class="text-xs text-slate-400">ยังไม่มีเที่ยวบิน</div>` : trip.flights.map(f => `
-        <div class="p-3 rounded-2xl bg-blue-50/70 border border-blue-100 flex justify-between items-center text-xs">
-          <div><strong class="text-brand-blue font-mono font-bold">${f.airline}</strong> • <span>${f.from} ➔ ${f.to}</span><div class="text-[10px] text-slate-400 mt-0.5">${formatThaiDate(f.date)} (${f.depTime} → ${f.arrTime})</div></div>
+      fl.innerHTML = trip.flights.length === 0 ? `<div class="text-xs text-slate-400 eng-upper">ยังไม่มีเที่ยวบิน</div>` : trip.flights.map(f => `
+        <div class="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-100 flex justify-between items-center text-xs">
+          <div><strong class="text-brand-blue font-mono font-bold text-sm eng-upper">${f.airline}</strong> • <span class="font-bold eng-upper">${f.from} ➔ ${f.to}</span><div class="text-[11px] text-slate-500 mt-0.5 eng-upper">${formatThaiDate(f.date)} (${f.depTime} → ${f.arrTime})</div></div>
           <button onclick="openActionMenu('flight', ${f.id}, '${f.airline}')" class="text-slate-400 hover:text-slate-700 p-1"><i class="fa-solid fa-ellipsis-vertical"></i></button>
         </div>
       `).join('');
 
       const tr = document.getElementById('transitListContainer');
-      tr.innerHTML = trip.transits.length === 0 ? `<div class="text-xs text-slate-400">ยังไม่มีข้อมูลรถไฟ / รถเช่า</div>` : trip.transits.map(t => `
-        <div class="p-3 rounded-2xl bg-cyan-50/70 border border-cyan-100 flex justify-between items-center text-xs">
-          <div><strong class="text-cyan-700 font-bold">${t.title}</strong> • <span>${t.from} ➔ ${t.to}</span><div class="text-[10px] text-slate-400 mt-0.5">${formatThaiDate(t.date)} (${t.depTime} - ${t.arrTime})</div></div>
+      tr.innerHTML = trip.transits.length === 0 ? `<div class="text-xs text-slate-400 eng-upper">ยังไม่มีข้อมูลรถไฟ / รถเช่า</div>` : trip.transits.map(t => `
+        <div class="p-3.5 rounded-2xl bg-cyan-50/70 border border-cyan-100 flex justify-between items-center text-xs">
+          <div><strong class="text-cyan-800 font-bold text-sm eng-upper">${t.title}</strong> • <span class="font-bold eng-upper">${t.from} ➔ ${t.to}</span><div class="text-[11px] text-slate-500 mt-0.5 eng-upper">${formatThaiDate(t.date)} (${t.depTime} - ${t.arrTime})</div></div>
           <button onclick="openActionMenu('transit', ${t.id}, '${t.title}')" class="text-slate-400 hover:text-slate-700 p-1"><i class="fa-solid fa-ellipsis-vertical"></i></button>
         </div>
       `).join('');
 
       const ht = document.getElementById('hotelListContainer');
-      ht.innerHTML = trip.hotels.length === 0 ? `<div class="text-xs text-slate-400">ยังไม่มีที่พัก</div>` : trip.hotels.map(h => `
-        <div class="p-3 rounded-2xl bg-amber-50/70 border border-amber-100 flex justify-between items-center text-xs">
-          <div><strong class="text-amber-800 font-bold">${h.name}</strong><div class="text-[10px] text-slate-400 mt-0.5">${formatThaiDate(h.checkIn)} → ${formatThaiDate(h.checkOut)}</div></div>
+      ht.innerHTML = trip.hotels.length === 0 ? `<div class="text-xs text-slate-400 eng-upper">ยังไม่มีที่พัก</div>` : trip.hotels.map(h => `
+        <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-100 flex justify-between items-center text-xs">
+          <div><strong class="text-amber-900 font-bold text-sm eng-upper">${h.name}</strong><div class="text-[11px] text-slate-500 mt-0.5 eng-upper">${formatThaiDate(h.checkIn)} → ${formatThaiDate(h.checkOut)}</div></div>
           <button onclick="openActionMenu('hotel', ${h.id}, '${h.name}')" class="text-slate-400 hover:text-slate-700 p-1"><i class="fa-solid fa-ellipsis-vertical"></i></button>
         </div>
       `).join('');
@@ -1176,14 +1175,14 @@
       const trip = getActiveTrip();
       const container = document.getElementById('checklistContainer');
       container.innerHTML = trip.checklists.map(c => `
-        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 flex justify-between items-center gap-2 cursor-pointer ${c.done ? 'opacity-50' : ''}" onclick="toggleChecklistDone(${c.id})">
-          <div class="flex items-center gap-2.5">
-            <div class="w-5 h-5 rounded-lg border-2 ${c.done ? 'bg-brand-blue border-brand-blue text-white' : 'border-slate-300 bg-white'} flex items-center justify-center text-[10px]">
+        <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex justify-between items-center gap-2 cursor-pointer ${c.done ? 'opacity-50' : ''}" onclick="toggleChecklistDone(${c.id})">
+          <div class="flex items-center gap-3">
+            <div class="w-5 h-5 rounded-lg border-2 ${c.done ? 'bg-brand-blue border-brand-blue text-white' : 'border-slate-300 bg-white'} flex items-center justify-center text-xs">
               ${c.done ? '<i class="fa-solid fa-check"></i>' : ''}
             </div>
-            <span class="text-xs font-bold ${c.done ? 'line-through text-slate-400' : 'text-slate-800'}">${c.text}</span>
+            <span class="text-xs font-bold ${c.done ? 'line-through text-slate-400' : 'text-slate-800'} eng-upper">${c.text}</span>
           </div>
-          <button onclick="event.stopPropagation(); openActionMenu('checklist', ${c.id}, '${c.text}')" class="text-slate-300 hover:text-slate-600 text-xs p-1">
+          <button onclick="event.stopPropagation(); openActionMenu('checklist', ${c.id}, '${c.text}')" class="text-slate-300 hover:text-slate-600 text-sm p-1">
             <i class="fa-solid fa-ellipsis-vertical"></i>
           </button>
         </div>
@@ -1195,9 +1194,9 @@
       const container = document.getElementById('emergencyContactsContainer');
       container.innerHTML = trip.emergencies.map(e => `
         <div class="p-4 rounded-2xl bg-white border border-slate-200/80 flex justify-between items-center shadow-sm">
-          <div><h4 class="text-xs font-bold text-slate-800">${e.name}</h4><p class="text-[10px] text-slate-400 mt-0.5">${e.desc}</p></div>
-          <a href="tel:${e.number}" class="px-3.5 py-1.5 rounded-full bg-brand-blue text-white font-mono font-bold text-xs shadow-sm flex items-center gap-1">
-            <i class="fa-solid fa-phone text-[10px]"></i> ${e.number}
+          <div><h4 class="text-sm font-bold text-slate-800 eng-upper">${e.name}</h4><p class="text-xs text-slate-400 mt-0.5 eng-upper">${e.desc}</p></div>
+          <a href="tel:${e.number}" class="px-4 py-2 rounded-full bg-brand-blue text-white font-mono font-bold text-xs shadow-sm flex items-center gap-1.5 eng-upper">
+            <i class="fa-solid fa-phone text-xs"></i> ${e.number}
           </a>
         </div>
       `).join('');
@@ -1214,7 +1213,6 @@
       link.click();
     }
 
-    // เริ่มต้นระบบ
     refreshUI();
   </script>
 </body>
