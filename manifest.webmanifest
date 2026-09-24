@@ -1,0 +1,22 @@
+{
+  "name": "MY TRIP — TRAVEL DASHBOARD",
+  "short_name": "MY TRIP",
+  "start_url": "./index-mytrip-icon.html",
+  "display": "standalone",
+  "background_color": "#f1eeff",
+  "theme_color": "#f1eeff",
+  "icons": [
+    {
+      "src": "mytrip-icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "mytrip-icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
